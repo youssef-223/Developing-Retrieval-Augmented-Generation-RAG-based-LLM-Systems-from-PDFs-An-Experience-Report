@@ -1,0 +1,307 @@
+A TOOL FOR TEST CASE SCENARIOS GENERATION USING
+LARGE LANGUAGE MODELS
+A PREPRINT
+Abdul Malik Sami
+Tampere University
+malik.sami@tuni.fi
+Zeeshan Rasheed
+Tampere University
+zeeshan.rasheed@tuni.fi
+Muhammad Waseem
+Jyväskylä University
+muhammad.m.waseem@jyu.fi
+Zheying Zhang
+Tampere University
+zheying.zhang@tuni.fi
+Herda Tomas
+Austrian Postal Service
+herda.tom@gmail.com
+Pekka Abrahamsson
+Tampere University
+pekka.abrahamsson@tuni.fi
+June 12, 2024
+ABSTRACT
+Large Language Models (LLMs) are widely used in Software Engineering (SE) for various tasks,
+including generating code, designing and documenting software, adding code comments, reviewing
+code, and writing test scripts. However, creating test scripts or automating test cases demands test
+suite documentation that comprehensively covers functional requirements. Such documentation must
+enable thorough testing within a constrained scope and timeframe, particularly as requirements and
+user demands evolve. This article centers on generating user requirements as epics and high-level
+user stories and crafting test case scenarios based on these stories. It introduces a web-based software
+tool that employs an LLM-based agent and prompt engineering to automate the generation of test
+case scenarios against user requirements.
+Keywords Software testing · Quality assurance · Test cases · LLMs · Generative AI
+1
+Introduction
+Requirements engineering, a critical discipline in software engineering, establishes the essential link between the
+technical specifications that software engineers develop and the intended purposes of the systems Bjarnason et al.
+[2016]. Throughout the development process—spanning proposal development, design, implementation, and test-
+ing—requirements are continually discussed Mnkandla and Dwolatzky [2004]. These discussions ensure that the
+application meets user requirements, which may be detailed as user stories or tasks. A significant challenge in this
+process is accurately converting user requirements into technical specifications that precisely align with user needs and
+expectations.
+Once the requirements are clearly defined, software testing plays a pivotal role in confirming that these requirements
+are met according to the acceptance criteria Abrahamsson et al. [2017]. It underscores the importance of verifying
+requirement fulfillment and maintaining traceability to identify any user changes or discrepancies in development
+against the specified requirements Mucha et al. [2024]. In response to the increasing demands for rapid development,
+the field of software engineering is evolving at an accelerated pace, therefore it’s critical to identify accurate, and clear
+requirements that are needed for using a test case scenarios suite using software requirements to effectivity validate and
+verify the requirements and its output Tang et al. [2024], Svensson and Torkar [2024].
+arXiv:2406.07021v1  [cs.SE]  11 Jun 2024
+arXiv Template
+A PREPRINT
+Artificial Intelligence (AI) and Natural Language Processing (NLP) initiate a revolutionary phase in computational
+tools, enabling the generation of text with human-like precision. The advent of advanced language models, especially
+within the GPT series, signifies a crucial development in this field Radford et al. [2018], Rasheed et al. [2024], Ouyang
+et al. [2022]. These Large Language Models (LLMs) excel in understanding natural language, positioning themselves
+as pioneers in a significant shift within software engineering. Transitioning from simple tools to collaborative partners,
+they provide insights and analyses that were once beyond the reach of traditional approaches Sami et al. [2024], Rasheed
+et al. [2023]. Using LLMs to convert requirements into user stories and then create test case scenarios is not only
+a theoretical undertaking but also a necessary step in the constantly changing software development industry. For
+each software’s functional requirements, this progression satisfies the essential need for automating, enhancing, and
+perfecting requirement creation and validation through test case scenarios Tikayat Ray et al. [2023], Zhang et al. [2024].
+1.1
+Problem Statement
+Despite the efforts to translate user requirements into detailed specifications for validation, the automation of test
+case scenarios for each functional requirement remains a notable challenge. The adoption of Large Language Model
+(LLM)-based agents to generate test case suites presents a promising avenue to overcome this obstacle.This study aims
+to explore the capabilities of LLMs in enhancing the generation of test case scenarios for functional requirements, with
+a focus on their application and impact within software requirement engineering and software testing perspectives. Our
+investigation is guided by the following research questions in Table 1:
+Table 1: Exploring LLMs in Generating Test Case Scenarios from User Requirements
+Research Question
+Objective
+How can large language models be applied to
+generating test case scenarios and suites?
+We aim to understand how LLMs are utilized in
+software engineering, specifically for creating
+test case scenarios for each functional require-
+ment.
+What are the limitations and opportunities of
+using large language models for test suite gener-
+ation and test case scenario creation?
+Our goal is to identify the challenges and poten-
+tial advancements in using LLMs for generating
+test suites and scenarios for software testing.
+Our research strategy focuses on enhancing the existing tool Sami et al. [2024] through the application of Large
+Language Models (LLMs) in several key areas:
+1. Taking the input of existing work as an output of prioritizing these stories.
+2. Use OpenAI’s agent-style API for creating test case scenarios with the aid of prompt engineering and LLMs.
+3. Allow the test suites to be downloaded in CSV format, enabling integration with a variety of test case
+management tools.
+4. Conduct assessments of performance and content analysis on the responses generated.
+In this paper, we report on the extension and enhancement of an existing web-based software tool designed for generating
+software test case scenarios. This work demonstrates the capabilities of GPT models in generating test scenarios from
+user stories. Our prototype highlights the potential of GPT models to interpret context from user stories and develop a
+comprehensive test suite effectively. This process assists testers in thoroughly verifying and validating requirements
+against every edge case and conceivable user scenario.
+The following is how the paper is organized: Background study is presented in Section 2, which establishes the context
+for our investigation. The research concept and methodology are described in Section 3, which also provides an
+overview of our methodical approach. Section 4 presents our observations and examines the preliminary outcomes. The
+limitations of our study are discussed in Section 5 along with suggestions for future research topics. Section 6 provides
+a conclusion.
+2
+Background
+2.1
+Generative AI Role in software testing
+Generative AI is designed to reproduce human-like output in a variety of fields, including multimedia production,
+computer vision, and natural language processing (NLP) Hacker et al. [2023]. The goal is to generate new material
+through this process. Through the use of autoregressive language models like GPT and Generative Adversarial
+2
+arXiv Template
+A PREPRINT
+Networks (GANs), this technology has transformed text production, machine translation, conversational systems, and
+code generation Aydın and Karaarslan [2023], Waseem et al. [2023]. The transformer architecture, which greatly
+improves NLP skills by recognizing contextual relationships in text, is essential to the GPT model’s capacity to produce
+text that nearly resembles human writing Radford et al. [2018], Rasheed et al..
+Recent advancements highlight how versatile and highly effective GPT models are, and how they can revolutionize
+software engineering (SE) methods Liu et al. [2023], Ouyang et al. [2022]. These models allow the automation
+of a number of tasks in the software development lifecycle, such as error identification, code snippet creation, and
+documentation, by using large code databases for training Feng et al. [2023], Treude [2023]. Incorporating GPT models
+into SE improves software production efficiency and quality overall, while also accelerating coding and application
+development Dong et al. [2023], Ma et al. [2023].
+The appearance of generative AI in SE marks a noteworthy shift, underscoring its capability to refine and expedite
+software development processes. Incorporating GPT models into SE heralds a pivotal transformation, affecting how
+software is crafted and maintained. Crucially, this advancement streamlines the prioritization of requirements—a key
+phase in development. AI’s application enables developers to generate test suite and test case scenarios more effectively,
+ensuring that critical features align with user needs and organizational objectives. This approach promises a move
+towards a more user-centric, and efficient paradigm in software development and testing.
+Many studies have looked into using GPT models in software engineering (SE) and software testing, including unit and
+GUI testing (Ahmad et al. [2023], Barke et al. [2023]. Using Large Language Models (LLMs) for developing test suites
+is a big step forward that can make software development more efficient and effective. Yet, issues like false information
+(hallucinations) and the limitations of understanding natural language show there’s a big need for research. We need a
+solution that can grasp wide-ranging client needs, automatically create user stories, and use LLMs to organize testing
+tasks efficiently. Modern software development methods, which value flexibility and the smart use of LLM agents,
+should be adopted by this tool. By addressing this need, we can enhance software quality and make full use of AI in
+the software development lifecycle. This opens up great possibilities for new research and development in the field
+by integrating test suites as user stories are being created, ensuring all critical scenarios are considered and meet user
+needs.
+3
+Preliminary Methodological Framework
+We enhance our existing web-based tool in this research by employing LLMs to provide a user-centric solution for
+precisely and efficiently generating test case scenarios for software development requirements. This tool benefits from
+the integration of React, Flask, and OpenAI technologies.
+1. Tool Development: We enhance the capabilities of our existing tools to demonstrate the practical application
+of LLMs in generating test cases that meet user requirements.
+2. Test Case Scenarios Generation: Users can input their requirements or upload predefined user stories. The
+system utilizes LLMs to generate test cases and scenarios for each requirement, covering all aspects of the use
+case.
+3. Evaluation and Output: During the evaluation phase, we analyze the tool’s outputs, including performance
+and content analysis generated by LLMs, and verify the conformance.
+Our methodology not only empirically validates the effectiveness of our tool but also illuminates the practical benefits
+of integrating LLMs into the software testing life cycle and the documentation process. It enhances the efficiency and
+ensures requirements align with user needs and modern software development practices.
+4
+Preliminary Empirical Results
+Our research introduces a system that streamlines the generation of test case scenarios using LLM agent. The aim is to
+enhance research workflows utilizing a Python Flask API, React UI, and ChatGPT 3.5. Our initial evaluation focuses
+on creating test case scenarios for documentation purposes. We perform an early analysis to assess system effectiveness
+and pinpoint areas for enhancement based on user feedback.
+4.1
+Identified User Requirements and Test Scenarios
+Our development is driven by specific user requirements. we generate test case scenarios that are meticulously checked
+and tailored to meet user needs. Fulfilling these requirements is crucial for maximizing research productivity and the
+3
+arXiv Template
+A PREPRINT
+Figure 1: Process of Generating testCase Scenarios Using LLMs and Analyzing Its Output
+efficiency of the process. Also noticable thing The quality of the input matters and test case generation change of the
+nature of user requirements.
+4.2
+System Configuration
+The architecture of our system incorporates React, CSS, and JavaScript with ANT design for the frontend, complemented
+by Flask for backend operations. This setup provides an API that interacts with the GPT-3.5 model, which transforms
+user inputs into organized and prioritized user story-based test cases.
+4.3
+Working of the tool
+Step 1: Generation of Test case scenarios: The system features functionality for generating test case scenarios againt
+the list in JSON format.
+User Story: As a researcher, I aim to formulate questions that align with my research objectives in order to direct the
+focus of the SLR-GPT system towards pertinent topics.
+Within this context, several scenarios are envisaged. For instance, Test Case 1 involves a researcher providing clear
+keywords related to their research objective, like “machine learning techniques for image recognition.” The expectation
+is that the SLR-GPT system would generate questions honing in on the key aspects of machine learning for image
+recognition.
+Another scenario, Test Case 5, presents a situation where a researcher sets forth objectives with specific constraints,
+such as “ethical considerations in AI applications under GDPR regulations.” In this case, the anticipated output is that
+the SLR-GPT system would customize questions to concentrate on the ethical considerations within AI applications,
+specifically concerning GDPR compliance.
+The testcases and its scenarios are listed displayed in Figure 2.
+Step 2: Exporting Test cases: The system simplifies the exportation of test case scenarios into a CSV format,
+facilitating their integration with project management and testing tools like JIRA, Azure DevOps, and RE management
+tools.
+The efficiency of this process is demonstrated by its ability to generate test case scenarios for each prioritized user
+requirement within an average of 2 seconds, highlighting the method’s rapid execution and the system’s capacity to
+accelerate the documentation of test case scenarios.
+In performing content analysis, we are calling the agent API, which is using regular expressions to parse the natural
+language responses. Making adjustments to various parameters, like temperature, proves essential for achieving
+accuracy. By conducting several rounds of testing, we are consistently producing results that match the expected
+behavior.
+4
+arXiv Template
+A PREPRINT
+Figure 2: Test Scenarios generation Using LLMs
+5
+Challenges and Future Directions
+This study makes use of LLMs for generating documents aimed at creating test case scenarios, but we have identified
+several challenges.
+1. LLM Hallucinations: A prevalent issue is LLM hallucinations, where the models generate outputs that do
+not correspond with the given input data Xu et al. [2024]. Incorporating Retrieval-Augmented Generation
+(RAG) and other fine-tuning techniques may mitigate this problem.
+2. Content Analysis Automation: It is essential to automate the process of content analysis and to ensure its
+accuracy. Our preliminary study provides a proof of concept that demonstrates LLMs’ abilities to produce
+test suites and edge case scenarios from requirements, yet there is a necessity to further refine and scale these
+approaches.
+3. Cost Evaluation: The expenses linked with utilizing the OPENAI API pose a financial challenge that may not
+be feasible for all organizations. An in-depth cost-benefit analysis of employing sophisticated AI capabilities
+is needed for a comprehensive assessment.
+These challenges needs consideration to advance our methodologies and harness the full potential of LLMs in software
+development.
+5.1
+Future Work
+Based on the findings of this research, we plan to investigate several areas in the future:
+1. Bench marking Framework: Future direction will establish a benchmark for comparing other open-source
+LLMs, focusing on content and code generation.
+2. Exploration of Open Source LLMs: We aim to assess and integrate open-source LLMs to offer cost-effective
+options and to perform a comparative analysis of the performance of different models.
+3. Test Case Code Generation: The system will be upgraded to produce test case code in user-preferred
+languages, such as Python or Node.js, meeting specific user needs.
+4. Co-pilot Development for Testing Tools: We intend to create a co-pilot feature that automates test suites,
+specifications, and test case code generation for user requirements, employing advanced AI techniques like
+RAG and lang-chain on a unified platform.
+5
+arXiv Template
+A PREPRINT
+6
+Conclusions
+In our study, we expand the work of the tool that employs OpenAI, Flask, and React to automatically create test case
+scenarios from prioritized requirements. This tool represents progress in utilizing AI to enhance test case processes,
+as it lets users input requirements directly. It showcases the simplification of software testing and documentation by
+transforming responses into a user-friendly JSON format and providing the capability to download these as CSV files
+for use with various testing tools.
+References
+Elizabeth Bjarnason, Michael Unterkalmsteiner, Markus Borg, and Emelie Engström. A multi-case study of agile
+requirements engineering and the use of test cases as requirements. Information and Software Technology, 77:61–79,
+2016.
+E. Mnkandla and B. Dwolatzky. A survey of agile methodologies. Transactions of the South African Institute of
+Electrical Engineers, 95(4):236–247, 2004.
+Pekka Abrahamsson, Outi Salo, Jussi Ronkainen, and Juhani Warsta. Agile software development methods: Review
+and analysis. arXiv preprint arXiv:1709.08439, 2017.
+Julia Mucha, Andreas Kaufmann, and Dirk Riehle. A systematic literature review of pre-requirements specification
+traceability. Requirements Engineering, pages 1–23, 2024.
+Yutian Tang, Zhijie Liu, Zhichao Zhou, and Xiapu Luo. Chatgpt vs sbst: A comparative assessment of unit test suite
+generation. IEEE Transactions on Software Engineering, 2024.
+Richard Berntsson Svensson and Richard Torkar. Not all requirements prioritization criteria are equal at all times: A
+quantitative analysis. Journal of Systems and Software, 209:111909, 2024.
+Alec Radford, Karthik Narasimhan, Tim Salimans, Ilya Sutskever, et al. Improving language understanding by
+generative pre-training. 2018.
+Zeeshan Rasheed, Muhammad Waseem, Aakash Ahmad, Kai-Kristian Kemell, Wang Xiaofeng, Anh Nguyen Duc,
+and Pekka Abrahamsson. Can large language models serve as data analysts? a multi-agent assisted approach for
+qualitative data analysis. arXiv preprint arXiv:2402.01386, 2024.
+Long Ouyang, Jeffrey Wu, Xu Jiang, Diogo Almeida, Carroll Wainwright, Pamela Mishkin, Chong Zhang, Sandhini
+Agarwal, Katarina Slama, Alex Ray, et al. Training language models to follow instructions with human feedback.
+Advances in Neural Information Processing Systems, 35:27730–27744, 2022.
+Abdul Malik Sami, Zeeshan Rasheed, Kai-Kristian Kemell, Muhammad Waseem, Terhi Kilamo, Mika Saari,
+Anh Nguyen Duc, Kari Systä, and Pekka Abrahamsson. System for systematic literature review using multiple ai
+agents: Concept and an empirical evaluation. arXiv preprint arXiv:2403.08399, 2024.
+Zeeshan Rasheed, Muhammad Waseem, Kai-Kristian Kemell, Wang Xiaofeng, Anh Nguyen Duc, Kari Systä, and Pekka
+Abrahamsson. Autonomous agents in software development: A vision paper. arXiv preprint arXiv:2311.18440,
+2023.
+Archana Tikayat Ray, Bjorn F Cole, Olivia J Pinon Fischer, Anirudh Prabhakara Bhat, Ryan T White, and Dimitri N
+Mavris. Agile methodology for the standardization of engineering requirements using large language models. Systems,
+11(7):352, 2023.
+Zheying Zhang, Maruf Rayhan, Tomas Herda, Manuel Goisauf, and Pekka Abrahamsson. Llm-based agents for
+automating the enhancement of user story quality: An early report. arXiv preprint arXiv:2403.09442, 2024.
+Philipp Hacker, Andreas Engel, and Marco Mauer. Regulating chatgpt and other large generative ai models. In
+Proceedings of the 2023 ACM Conference on Fairness, Accountability, and Transparency, pages 1112–1123, 2023.
+Ömer Aydın and Enis Karaarslan. Is chatgpt leading generative ai? what is beyond expectations? What is beyond
+expectations, 2023.
+Muhammad Waseem, Teerath Das, Aakash Ahmad, Mahdi Fehmideh, Peng Liang, and Tommi Mikkonen. Using
+chatgpt throughout the software development life cycle by novice developers. arXiv preprint arXiv:2310.13648,
+2023.
+Zeeshan Rasheed, Muhammad Waseem, Kari Systä, and Pekka Abrahamsson. Large language model evaluation via
+multi ai agents: Preliminary results. In ICLR 2024 Workshop on Large Language Model (LLM) Agents.
+Xiao Liu, Yanan Zheng, Zhengxiao Du, Ming Ding, Yujie Qian, Zhilin Yang, and Jie Tang. Gpt understands, too. AI
+Open, 2023.
+6
+arXiv Template
+A PREPRINT
+Yunhe Feng, Sreecharan Vanam, Manasa Cherukupally, Weijian Zheng, Meikang Qiu, and Haihua Chen. Investigating
+code generation performance of chat-gpt with crowdsourcing social data. In Proceedings of the 47th IEEE Computer
+Software and Applications Conference, pages 1–10, 2023.
+Christoph Treude. Navigating complexity in software engineering: A prototype for comparing gpt-n solutions. arXiv
+preprint arXiv:2301.12169, 2023.
+Yihong Dong, Xue Jiang, Zhi Jin, and Ge Li.
+Self-collaboration code generation via chatgpt.
+arXiv preprint
+arXiv:2304.07590, 2023.
+Wei Ma, Shangqing Liu, Wenhan Wang, Qiang Hu, Ye Liu, Cen Zhang, Liming Nie, and Yang Liu. The scope of
+chatgpt in software engineering: A thorough investigation. arXiv preprint arXiv:2305.12138, 2023.
+Aakash Ahmad, Muhammad Waseem, Peng Liang, Mahdi Fahmideh, Mst Shamima Aktar, and Tommi Mikkonen.
+Towards human-bot collaborative software architecting with chatgpt. In Proceedings of the 27th International
+Conference on Evaluation and Assessment in Software Engineering, pages 279–285, 2023.
+Shraddha Barke, Michael B James, and Nadia Polikarpova. Grounded copilot: How programmers interact with
+code-generating models. Proceedings of the ACM on Programming Languages, 7(OOPSLA1):85–111, 2023.
+Ziwei Xu, Sanjay Jain, and Mohan Kankanhalli. Hallucination is inevitable: An innate limitation of large language
+models. arXiv preprint arXiv:2401.11817, 2024.
+7
